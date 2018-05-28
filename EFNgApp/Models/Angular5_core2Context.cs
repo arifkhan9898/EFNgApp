@@ -8,13 +8,16 @@ namespace EFNgApp.Models
     {
         public virtual DbSet<TblCities> TblCities { get; set; }
         public virtual DbSet<TblEmployee> TblEmployee { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public static string GetConnectionString()
+		{
+			return Startup.ConnectionString;
+		}
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Data Source=.;Initial Catalog=Angular5_core2;Integrated Security=True");
+                optionsBuilder.UseSqlServer(GetConnectionString());
             }
         }
 

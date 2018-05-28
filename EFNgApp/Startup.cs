@@ -9,29 +9,36 @@ namespace EFNgApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
-        }
+			Configuration = new ConfigurationBuilder()
+											.SetBasePath(env.ContentRootPath)
+											.AddJsonFile("appSettings.json")
+											.Build();
+		}
 
         public IConfiguration Configuration { get; }
+		   public static string ConnectionString { get; private set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			    
+			     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+			    ConnectionString = Configuration["ConnectionStrings:DefaultConnection"];
+			      if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
